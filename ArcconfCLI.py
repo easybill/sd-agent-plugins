@@ -18,7 +18,7 @@ import time
 class ArcconfCLI(object):
     """
         Check the "Status of Logical Device" of the controller using output from
-        /opt/arcconf GETCONFIG 1 LD
+        /var/opt/arcconf GETCONFIG 1 LD
     """
 
     def __init__(self, agent_config, checks_logger, raw_config):
@@ -33,7 +33,7 @@ class ArcconfCLI(object):
 
         try:
             proc = subprocess.Popen(
-                ['sudo', '/opt/arcconf', 'GETCONFIG', '1', 'LD'],
+                ['sudo', '/var/opt/arcconf', 'GETCONFIG', '1', 'LD'],
                 stdout=subprocess.PIPE,
                 close_fds=True)
             output = proc.communicate()[0]
