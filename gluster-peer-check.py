@@ -1,12 +1,3 @@
-"""
-  Server Density Plugin
-  ArcconfCLI monitor
-
-  Inspired by https://github.com/serverdensity/sd-agent-plugins/tree/master/MegaRAID
-
-  Version: 1.0.0
-"""
-
 import json
 import logging
 import platform
@@ -15,12 +6,30 @@ import subprocess
 import time
 import re
 
-class ArcconfCLI(object):
+class GlusterPeerStatus(object):
     """
-        Check the "Status of Logical Device" of the controller using output from
-        /var/opt/arcconf GETCONFIG 1 LD
-    """
+    Check the status of Gluster. 
 
+        gluster peer status - output:
+        Number of Peers: 2
+
+        Hostname: gfs2.easybill.io
+        Uuid: 8521f8a1-5610-4856-8ef3-ffacd648ea03
+        State: Peer in Cluster (Connected)
+
+        Hostname: gfs3.easybill.io
+        Uuid: ffafd30f-b0a3-47ad-a221-01829862419e
+        State: Peer in Cluster (Connected)
+
+        Desired output:
+        {
+            "peer-count": 2
+            "peer-connected-count": 2,
+            "peer-disconnected-count": 0,
+            "peer-gfs2.easybill.io-state": "Peer in Cluster (Connected)",
+            "peer-gfs3.easybill.io-state": "Peer in Cluster (Connected)"
+        }
+    """
     def __init__(self, agent_config, checks_logger, raw_config):
         self.agent_config = agent_config
         self.checks_logger = checks_logger
@@ -41,26 +50,7 @@ class ArcconfCLI(object):
             self.checks_logger.error(
                 ' Error: {0}'.format(exception.message))
             return data
-        """
-        Number of Peers: 2
-
-        Hostname: gfs2.easybill.io
-        Uuid: 8521f8a1-5610-4856-8ef3-ffacd648ea03
-        State: Peer in Cluster (Connected)
-
-        Hostname: gfs3.easybill.io
-        Uuid: ffafd30f-b0a3-47ad-a221-01829862419e
-        State: Peer in Cluster (Connected)
-        """
-        """
-        {
-            "peer-count": 2
-            "peer-connected-count": 2,
-            "peer-disconnected-count": 0,
-            "peer-gfs2.easybill.io-state": "Peer in Cluster (Connected)",
-            "peer-gfs3.easybill.io-state": "Peer in Cluster (Connected)"
-        }
-        """
+       
         pcc = output.count('Connected')
         #       print ('Total connected are: ', pcc)
         pdc = output.count('Disconnected')
@@ -93,7 +83,7 @@ if __name__ == '__main__':
     main_checks_logger = logging.getLogger('gluster-peer')
     main_checks_logger.setLevel(logging.DEBUG)
     main_checks_logger.addHandler(logging.StreamHandler(sys.stdout))
-    megaraid_check = ArcconfCLI({}, main_checks_logger, raw_agent_config)
+    megaraid_check = GlusterPeerStatus({}, main_checks_logger, raw_agent_config)
 
     while True:
         try:
