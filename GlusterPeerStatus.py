@@ -42,7 +42,7 @@ class GlusterPeerStatus(object):
 
         try:
             proc = subprocess.Popen(
-                ['sudo', 'gluster', 'peer', 'status'],
+                ['sudo', '/usr/sbin/gluster', 'peer', 'status'],
                 stdout=subprocess.PIPE,
                 close_fds=True)
             output = proc.communicate()[0]
@@ -58,7 +58,7 @@ class GlusterPeerStatus(object):
 
         lines = output.split("\n\n")
         firstline = lines.pop(0)
-        data['peer-count'] = int(firstline.replace('Number of Peers:', '').replace(' ', ''))
+        data['peer-count'] = firstline.replace('Number of Peers:', '').replace(' ', '')
         data['peer-connected-count'] = pcc
         data['peer-disconnected-count'] = pdc
 
