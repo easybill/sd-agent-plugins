@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     raw_agent_config = {}
 
-    main_checks_logger = logging.getLogger('gluster-peer')
+    main_checks_logger = logging.getLogger('min-io')
     main_checks_logger.setLevel(logging.DEBUG)
     main_checks_logger.addHandler(logging.StreamHandler(sys.stdout))
     check = MinIO({}, main_checks_logger, raw_agent_config)
